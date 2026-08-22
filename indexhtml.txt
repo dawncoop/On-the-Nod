@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Punk Radio Archives</title>
+  <style>
+    /* High-contrast, punk-inspired color theme matching the logos */
+    :root {
+      --bg-color: #050505;       /* Deep black background */
+      --card-bg: #121212;       /* Charcoal card background */
+      --accent-color: #dc2626;   /* Crimson red from On The Nod logo */
+      --accent-hover: #991b1b;   /* Darker red when hovering buttons */
+      --text-main: #ffffff;      /* Pure white text */
+      --text-muted: #d4d4d8;     /* Light silver for dates & secondary details */
+      --border-color: #27272a;   /* Subtle dark borders */
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-size: 20px; /* Large 20px font size for high readability */
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      text-align: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+
+    header h1 {
+      font-size: 2.75rem;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1.25rem;
+    }
+
+    /* Tab Navigation */
+    .tab-navigation {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border: 2px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      min-width: 280px;
+      text-align: center;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--accent-color);
+    }
+
+    .tab-btn.active {
+      background-color: var(--accent-color);
+      color: #ffffff;
+      border-color: var(--accent-color);
+    }
+
+    /* Show Sections */
+    .show-section {
+      display: none;
+    }
+
+    .show-section.active {
+      display: block;
+    }
+
+    .show-header {
+      background-color: #090d16;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+
+    .show-logo {
+      max-width: 380px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 1.25rem;
+      border: 2px solid var(--border-color);
+    }
+
+    .show-header h2 {
+      color: var(--text-main);
+      font-size: 2.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .show-header p {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+    }
+
+    /* Episode Cards Grid */
+    .episodes-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .episode-card {
+      background-color: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .episode-card.is-playing {
+      border-color: var(--accent-color);
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    .meta {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .episode-title {
+      font-size: 1.85rem;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+    }
+
+    /* Audio Player Controls */
+    .custom-player {
+      background-color: #050505;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .play-btn {
+      background-color: var(--accent-color);
+      color: #ffffff;
+      border: none;
+      min-height: 56px;
+      padding: 0 1.5rem;
+      border-radius: 28px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      transition: background-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .play-btn:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .play-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-grow: 1;
+      min-width: 250px;
+    }
+
+    .time-display {
+      font-family: monospace;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 12px;
+      background: var(--border-color);
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      cursor: pointer;
+      border: 2px solid #ffffff;
+    }
+
+    /* Show Notes */
+    .show-notes {
+      border-top: 2px solid var(--border-color);
+      padding-top: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .show-notes h3 {
+      font-size: 1.35rem;
+      color: var(--accent-color);
+      margin-bottom: 0.75rem;
+    }
+
+    .show-notes p {
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      font-size: 1.1rem;
+    }
+
+    .tracklist {
+      list-style: none;
+      font-size: 1.05rem;
+    }
+
+    .tracklist li {
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed var(--border-color);
+      color: var(--text-main);
+    }
+
+    .tracklist li:last-child {
+      border-bottom: none;
+    }
+
+    .tracklist span {
+      color: var(--accent-color);
+      font-family: monospace;
+      font-weight: bold;
+      margin-right: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Radio Broadcast Archive</h1>
+      <p>Select a show below to listen back to past broadcasts and tracklists.</p>
+    </header>
+
+    <!-- Show Selection Buttons -->
+    <nav class="tab-navigation">
+      <button class="tab-btn active" data-target="show-on-the-nod">
+        On The Nod
+      </button>
+      <button class="tab-btn" data-target="show-friday-ike">
+        The Friday Night Ike Music Hour
+      </button>
+    </nav>
+
+    <!-- SHOW 1: ON THE NOD -->
+    <section id="show-on-the-nod" class="show-section active">
+      <div class="show-header">
+        <img src="on-the-nod-logo.jpg" alt="On The Nod Logo" class="show-logo">
+        <h2>On The Nod</h2>
+        <p>Listen back to past episodes of On The Nod.</p>
+      </div>
+
+      <div class="episodes-grid">
+        <article class="episode-card">
+          <span class="badge">Latest Episode</span>
+          <div class="meta">Broadcast Date: October 2026</div>
+          <h2 class="episode-title">On The Nod - Episode 01</h2>
+
+          <audio class="audio-element" src="https://www.w3schools.com/html/horse.mp3" preload="metadata"></audio>
+
+          <div class="custom-player">
+            <div class="player-controls">
+              <button class="play-btn" aria-label="Play On The Nod Episode 1">
+                <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                <span class="btn-label">LISTEN NOW</span>
+              </button>
+              <div class="progress-container">
+                <span class="time-display current-time">0:00</span>
+                <input type="range" class="seek-slider" value="0" max="100" aria-label="Seek track position">
+                <span class="time-display total-duration">0:00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="show-notes">
+            <h3>Show Notes & Tracklist</h3>
+            <p>Episode details and tracklists for On The Nod will be listed here.</p>
+            <ul class="tracklist">
+              <li><span>[00:00]</span> Track Name – Artist</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SHOW 2: THE FRIDAY NIGHT IKE MUSIC HOUR -->
+    <section id="show-friday-ike" class="show-section">
+      <div class="show-header">
+        <img src="friday-ike-artwork.jpg" alt="The Friday Night Ike Music Hour Artwork" class="show-logo">
+        <h2>The Friday Night Ike Music Hour</h2>
+        <p>Featuring garage, oldies, and soul classics.</p>
+      </div>
+
+      <div class="episodes-grid">
+        <article class="episode-card">
+          <span class="badge">Latest Episode</span>
+          <div class="meta">Broadcast Date: October 2026 • Friday 7PM PST / 10PM EST</div>
+          <h2 class="episode-title">Friday Night Ike - Broadcast #01</h2>
+
+          <audio class="audio-element" src="https://www.w3schools.com/html/horse.mp3" preload="metadata"></audio>
+
+          <div class="custom-player">
+            <div class="player-controls">
+              <button class="play-btn" aria-label="Play Friday Night Ike Episode 1">
+                <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                <span class="btn-label">LISTEN NOW</span>
+              </button>
+              <div class="progress-container">
+                <span class="time-display current-time">0:00</span>
+                <input type="range" class="seek-slider" value="0" max="100" aria-label="Seek track position">
+                <span class="time-display total-duration">0:00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="show-notes">
+            <h3>Show Notes & Tracklist</h3>
+            <p>A mix of garage rock, classic oldies, and soul tracks.</p>
+            <ul class="tracklist">
+              <li><span>[00:00]</span> Track Name – Artist</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Tab Switching Script
+      const tabButtons = document.querySelectorAll(".tab-btn");
+      const showSections = document.querySelectorAll(".show-section");
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const targetId = button.getAttribute("data-target");
+
+          tabButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+
+          showSections.forEach((section) => {
+            if (section.id === targetId) {
+              section.classList.add("active");
+            } else {
+              section.classList.remove("active");
+            }
+          });
+        });
+      });
+
+      // Multi-Episode Audio Player Controller
+      const allCards = document.querySelectorAll(".episode-card");
+      let currentlyPlayingAudio = null;
+
+      const formatTime = (secs) => {
+        if (isNaN(secs)) return "0:00";
+        const minutes = Math.floor(secs / 60);
+        const seconds = Math.floor(secs % 60);
+        return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      };
+
+      allCards.forEach((card) => {
+        const audio = card.querySelector(".audio-element");
+        const playBtn = card.querySelector(".play-btn");
+        const iconPlay = card.querySelector(".icon-play");
+        const iconPause = card.querySelector(".icon-pause");
+        const btnLabel = card.querySelector(".btn-label");
+        const seekSlider = card.querySelector(".seek-slider");
+        const currentTimeSpan = card.querySelector(".current-time");
+        const durationSpan = card.querySelector(".total-duration");
+
+        audio.addEventListener("loadedmetadata", () => {
+          durationSpan.textContent = formatTime(audio.duration);
+        });
+
+        const setPlayerState = (isPlaying) => {
+          if (isPlaying) {
+            iconPlay.style.display = "none";
+            iconPause.style.display = "block";
+            btnLabel.textContent = "PAUSE";
+            card.classList.add("is-playing");
+          } else {
+            iconPlay.style.display = "block";
+            iconPause.style.display = "none";
+            btnLabel.textContent = "LISTEN NOW";
+            card.classList.remove("is-playing");
+          }
+        };
+
+        playBtn.addEventListener("click", () => {
+          if (currentlyPlayingAudio && currentlyPlayingAudio !== audio) {
+            currentlyPlayingAudio.pause();
+          }
+
+          if (audio.paused) {
+            audio.play();
+            currentlyPlayingAudio = audio;
+          } else {
+            audio.pause();
+          }
+        });
+
+        audio.addEventListener("play", () => setPlayerState(true));
+        audio.addEventListener("pause", () => setPlayerState(false));
+
+        audio.addEventListener("timeupdate", () => {
+          if (!isNaN(audio.duration)) {
+            const progressPercent = (audio.currentTime / audio.duration) * 100;
+            seekSlider.value = progressPercent;
+            currentTimeSpan.textContent = formatTime(audio.currentTime);
+          }
+        });
+
+        seekSlider.addEventListener("input", () => {
+          if (!isNaN(audio.duration)) {
+            const seekTime = (seekSlider.value / 100) * audio.duration;
+            audio.currentTime = seekTime;
+          }
+        });
+
+        audio.addEventListener("ended", () => {
+          setPlayerState(false);
+          seekSlider.value = 0;
+          currentTimeSpan.textContent = "0:00";
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
